@@ -29,18 +29,23 @@ static void intPrint(const void* value) {
 }
 //исаользовать парадигму объект кк глобальная консттанта с ленивой инициализацией и мемоизацией
 const FieldInfo* GetIntFieldInfo(void) {
-    static FieldInfo info = {
-        sizeof(int),
-        "int",
-        intAdd,
-        intMul,
-        intCopy,
-        intFromDouble,
-        intZero,
-        intPrint
-    };
+    static FieldInfo info;
+    static int initialized = 0;
+
+    if (!initialized) {
+        info.size = sizeof(int);
+        info.typeName = "int";
+        info.add = intAdd;
+        info.mul = intMul;
+        info.copy = intCopy;
+        info.fromDouble = intFromDouble;
+        info.zero = intZero;
+        info.print = intPrint;
+        initialized = 1;
+    }
+
     return &info;
-}//чтоб не была лок переменной
+}
 
 /* ---------------- double ---------------- */
 
@@ -69,16 +74,21 @@ static void doublePrint(const void* value) {
 }
 
 const FieldInfo* GetDoubleFieldInfo(void) {
-    static FieldInfo info = {
-        sizeof(double),
-        "double",
-        doubleAdd,
-        doubleMul,
-        doubleCopy,
-        doubleFromDouble,
-        doubleZero,
-        doublePrint
-    };
+    static FieldInfo info;
+    static int initialized = 0;
+
+    if (!initialized) {
+        info.size = sizeof(double);
+        info.typeName = "double";
+        info.add = doubleAdd;
+        info.mul = doubleMul;
+        info.copy = doubleCopy;
+        info.fromDouble = doubleFromDouble;
+        info.zero = doubleZero;
+        info.print = doublePrint;
+        initialized = 1;
+    }
+
     return &info;
 }
 
@@ -102,15 +112,20 @@ static void charPrint(const void* value) {
 }
 
 const FieldInfo* GetCharFieldInfo(void) {
-    static FieldInfo info = {
-        sizeof(char),
-        "char",
-        NULL,
-        NULL,
-        charCopy,
-        NULL,
-        charZero,
-        charPrint
-    };
+    static FieldInfo info;
+    static int initialized = 0;
+
+    if (!initialized) {
+        info.size = sizeof(char);
+        info.typeName = "char";
+        info.add = NULL;
+        info.mul = NULL;
+        info.copy = charCopy;
+        info.fromDouble = NULL;
+        info.zero = charZero;
+        info.print = charPrint;
+        initialized = 1;
+    }
+
     return &info;
 }
