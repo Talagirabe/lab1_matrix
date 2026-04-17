@@ -129,7 +129,10 @@ static void TestMatrixAddInt(void) {
     MatrixDestroy(b);
     MatrixDestroy(result);
 }
-
+//проверить верность формулы как таковой а не результата  через строки
+static void check(void) {
+    Matrix //проверить умножение через кольца не объявляя матрицы
+}
 /* Тест: умножение матриц */
 static void TestMatrixMultiplyInt(void) {
     Matrix* a = MatrixCreate(2, GetIntFieldInfo());

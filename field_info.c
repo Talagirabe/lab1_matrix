@@ -1,6 +1,7 @@
 #include "field_info.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 /* ---------------- int ---------------- */
 
@@ -28,23 +29,23 @@ static void intPrint(const void* value) {
     printf("%d", *(const int*)value);
 }
 //исаользовать парадигму объект кк глобальная консттанта с ленивой инициализацией и мемоизацией
+// маллоком указатель объявляем тк статические данные это отдельное место в памяти и оно создается без прямого вызова
 const FieldInfo* GetIntFieldInfo(void) {
-    static FieldInfo info;
-    static int initialized = 0;
+    static FieldInfo* intFields = NULL; // статический указатель на FieldInfo
 
-    if (!initialized) {
-        info.size = sizeof(int);
-        info.typeName = "int";
-        info.add = intAdd;
-        info.mul = intMul;
-        info.copy = intCopy;
-        info.fromDouble = intFromDouble;
-        info.zero = intZero;
-        info.print = intPrint;
-        initialized = 1;
+    if (intFields == NULL) {            // проверка на NULL заменяет флаг
+        intFields = malloc(sizeof(*intFields));
+        intFields->size = sizeof(int);
+        intFields->typeName = "int";
+        intFields->add = intAdd;
+        intFields->mul = intMul;
+        intFields->copy = intCopy;
+        intFields->fromDouble = intFromDouble;
+        intFields->zero = intZero;
+        intFields->print = intPrint;
     }
 
-    return &info;
+    return intFields;
 }
 
 /* ---------------- double ---------------- */
@@ -74,22 +75,21 @@ static void doublePrint(const void* value) {
 }
 
 const FieldInfo* GetDoubleFieldInfo(void) {
-    static FieldInfo info;
-    static int initialized = 0;
+    static FieldInfo* doubleFields = NULL;
 
-    if (!initialized) {
-        info.size = sizeof(double);
-        info.typeName = "double";
-        info.add = doubleAdd;
-        info.mul = doubleMul;
-        info.copy = doubleCopy;
-        info.fromDouble = doubleFromDouble;
-        info.zero = doubleZero;
-        info.print = doublePrint;
-        initialized = 1;
+    if (doubleFields == NULL) {
+        doubleFields = malloc(sizeof(*doubleFields));
+        doubleFields->size = sizeof(double);
+        doubleFields->typeName = "double";
+        doubleFields->add = doubleAdd;
+        doubleFields->mul = doubleMul;
+        doubleFields->copy = doubleCopy;
+        doubleFields->fromDouble = doubleFromDouble;
+        doubleFields->zero = doubleZero;
+        doubleFields->print = doublePrint;
     }
 
-    return &info;
+    return doubleFields;
 }
 
 /* ---------------- char ----------------*/
@@ -112,20 +112,19 @@ static void charPrint(const void* value) {
 }
 
 const FieldInfo* GetCharFieldInfo(void) {
-    static FieldInfo info;
-    static int initialized = 0;
+    static FieldInfo* charFields = NULL;
 
-    if (!initialized) {
-        info.size = sizeof(char);
-        info.typeName = "char";
-        info.add = NULL;
-        info.mul = NULL;
-        info.copy = charCopy;
-        info.fromDouble = NULL;
-        info.zero = charZero;
-        info.print = charPrint;
-        initialized = 1;
+    if (charFields == NULL) {
+        charFields = malloc(sizeof(*charFields));
+        charFields->size = sizeof(char);
+        charFields->typeName = "char";
+        charFields->add = NULL;
+        charFields->mul = NULL;
+        charFields->copy = charCopy;
+        charFields->fromDouble = NULL;
+        charFields->zero = charZero;
+        charFields->print = charPrint;
     }
 
-    return &info;
+    return charFields;
 }
