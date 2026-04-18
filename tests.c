@@ -111,45 +111,6 @@ static void TestMatrixCreateChar(void) {
     MatrixDestroy(matrix);
 }
 
-/* Тест: сложение матриц */
-static void TestMatrixAddInt(void) {
-    Matrix* a = MatrixCreate(2, GetIntFieldInfo());
-    Matrix* b = MatrixCreate(2, GetIntFieldInfo());
-    Matrix* result;
-
-    Assert(a != NULL, "Create matrix A for add");
-    Assert(b != NULL, "Create matrix B for add");
-
-    if (a == NULL || b == NULL) {
-        MatrixDestroy(a);
-        MatrixDestroy(b);
-        return;
-    }
-
-    FillIntMatrix2x2(a, 1, 2, 3, 4);
-    FillIntMatrix2x2(b, 5, 6, 7, 8);
-
-    result = MatrixCreate(2, GetIntFieldInfo());
-    Assert(result != NULL, "Create result matrix for add");
-
-    if (result == NULL) {
-        MatrixDestroy(a);
-        MatrixDestroy(b);
-        return;
-    }
-
-    MatrixAdd(a, b, result);
-
-    Assert(CheckIntCell(result, 0, 0, 6), "Add [0][0]");
-    Assert(CheckIntCell(result, 0, 1, 8), "Add [0][1]");
-    Assert(CheckIntCell(result, 1, 0, 10), "Add [1][0]");
-    Assert(CheckIntCell(result, 1, 1, 12), "Add [1][1]");
-
-    MatrixDestroy(a);
-    MatrixDestroy(b);
-    MatrixDestroy(result);
-}
-
 //проверить верность формулы как таковой а не результата  через строки
 static void checkInt(void) {
     const FieldInfo* testInt = GetIntFieldInfo();
@@ -208,6 +169,45 @@ static void checkChar(void) {
     Assert(testChar->add == NULL, "AddChar IsNull Test");
     Assert(testChar->mul == NULL, "MulChar IsNull Test");
     Assert(testChar->fromDouble == NULL, "CharFromDouble IsNull Test");
+}
+
+/* Тест: сложение матриц */
+static void TestMatrixAddInt(void) {
+    Matrix* a = MatrixCreate(2, GetIntFieldInfo());
+    Matrix* b = MatrixCreate(2, GetIntFieldInfo());
+    Matrix* result;
+
+    Assert(a != NULL, "Create matrix A for add");
+    Assert(b != NULL, "Create matrix B for add");
+
+    if (a == NULL || b == NULL) {
+        MatrixDestroy(a);
+        MatrixDestroy(b);
+        return;
+    }
+
+    FillIntMatrix2x2(a, 1, 2, 3, 4);
+    FillIntMatrix2x2(b, 5, 6, 7, 8);
+
+    result = MatrixCreate(2, GetIntFieldInfo());
+    Assert(result != NULL, "Create result matrix for add");
+
+    if (result == NULL) {
+        MatrixDestroy(a);
+        MatrixDestroy(b);
+        return;
+    }
+
+    MatrixAdd(a, b, result);
+
+    Assert(CheckIntCell(result, 0, 0, 6), "Add [0][0]");
+    Assert(CheckIntCell(result, 0, 1, 8), "Add [0][1]");
+    Assert(CheckIntCell(result, 1, 0, 10), "Add [1][0]");
+    Assert(CheckIntCell(result, 1, 1, 12), "Add [1][1]");
+
+    MatrixDestroy(a);
+    MatrixDestroy(b);
+    MatrixDestroy(result);
 }
 
 /* Тест: умножение матриц */
@@ -286,11 +286,9 @@ static void TestMatrixScalarMultiplyDouble(void) {
 static void TestDifferentTypesFail(void) {
     Matrix* a = MatrixCreate(2, GetIntFieldInfo());
     Matrix* b = MatrixCreate(2, GetDoubleFieldInfo());
-    Matrix* resultInt;
-    Matrix* resultDouble;
 
-    Assert(a != NULL, "Create int matrix for type mismatch");
-    Assert(b != NULL, "Create double matrix for type mismatch");
+    Assert(a != NULL, "Create int matrix for mismatch");
+    Assert(b != NULL, "Create double matrix for mismatch");
 
     if (a == NULL || b == NULL) {
         MatrixDestroy(a);
@@ -298,27 +296,10 @@ static void TestDifferentTypesFail(void) {
         return;
     }
 
-    resultInt = MatrixCreate(2, GetIntFieldInfo());
-    resultDouble = MatrixCreate(2, GetDoubleFieldInfo());
-
-    Assert(resultInt != NULL, "Create int result matrix for mismatch");
-    Assert(resultDouble != NULL, "Create double result matrix for mismatch");
-
-    if (resultInt != NULL) {
-        MatrixAdd(a, b, resultInt);
-    }
-
-    if (resultDouble != NULL) {
-        MatrixMultiply(a, b, resultDouble);
-    }
-
-    /* Здесь прямого возврата ошибки уже нет, поэтому проверяем совместимость отдельно */
-    Assert(a->type != b->type, "Different types are detected");
+    Assert(a->type != b->type, "Different matrix types are incompatible");
 
     MatrixDestroy(a);
     MatrixDestroy(b);
-    MatrixDestroy(resultInt);
-    MatrixDestroy(resultDouble);
 }
 
 /* Тест: хранение символов в char-матрице */
