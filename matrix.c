@@ -67,21 +67,15 @@ void MatrixDestroy(Matrix* matrix) {
     free(matrix);
 }
 
-/* Сложение двух матриц */
-Matrix* MatrixAdd(const Matrix* a, const Matrix* b) {
-    if (!MatrixIsCompatible(a, b) || a->type->add == NULL) {
-        return NULL;
-    }
-
-    Matrix* result = MatrixCreate(a->size, a->type);
-    if (result == NULL) {
-        return NULL;
+/* Сложение матриц */
+void MatrixAdd(const Matrix* a, const Matrix* b, Matrix* result) {
+    if (!MatrixIsCompatible(a, b) || a->type->add == NULL || !result) {
+        return;
     }
 
     void* temp = malloc(a->type->size);
     if (temp == NULL) {
-        MatrixDestroy(result);
-        return NULL;
+        return;
     }
 
     for (size_t i = 0; i < a->size; i++) {
@@ -96,18 +90,12 @@ Matrix* MatrixAdd(const Matrix* a, const Matrix* b) {
     }
 
     free(temp);
-    return result;
 }
 
 /* Умножение матриц */
-Matrix* MatrixMultiply(const Matrix* a, const Matrix* b) {
-    if (!MatrixIsCompatible(a, b) || a->type->mul == NULL || a->type->add == NULL || a->type->zero == NULL) {
-        return NULL;
-    }
-
-    Matrix* result = MatrixCreate(a->size, a->type);
-    if (result == NULL) {
-        return NULL;
+void MatrixMultiply(const Matrix* a, const Matrix* b, Matrix* result) {
+    if (!MatrixIsCompatible(a, b) || a->type->mul == NULL || a->type->add == NULL || a->type->zero == NULL || !result) {
+        return;
     }
 
     void* sum = malloc(a->type->size);
@@ -118,8 +106,7 @@ Matrix* MatrixMultiply(const Matrix* a, const Matrix* b) {
         free(sum);
         free(product);
         free(nextSum);
-        MatrixDestroy(result);
-        return NULL;
+        return;
     }
 
     for (size_t i = 0; i < a->size; i++) {
@@ -142,24 +129,17 @@ Matrix* MatrixMultiply(const Matrix* a, const Matrix* b) {
     free(sum);
     free(product);
     free(nextSum);
-    return result;
 }
 
 /* Умножение матрицы на скаляр */
-Matrix* MatrixScalarMultiply(const Matrix* matrix, const void* scalar) {
-    if (matrix == NULL || scalar == NULL || matrix->type->mul == NULL) {
-        return NULL;
-    }
-
-    Matrix* result = MatrixCreate(matrix->size, matrix->type);
-    if (result == NULL) {
-        return NULL;
+void MatrixScalarMultiply(const Matrix* matrix, const void* scalar, Matrix* result) {
+    if (!matrix || !scalar || matrix->type->mul == NULL || !result) {
+        return;
     }
 
     void* temp = malloc(matrix->type->size);
     if (temp == NULL) {
-        MatrixDestroy(result);
-        return NULL;
+        return;
     }
 
     for (size_t i = 0; i < matrix->size; i++) {
@@ -173,12 +153,11 @@ Matrix* MatrixScalarMultiply(const Matrix* matrix, const void* scalar) {
     }
 
     free(temp);
-    return result;
 }
 
 /* Печать матрицы */
 void MatrixPrint(const Matrix* matrix) {
-    if (matrix == NULL) {
+    if (!matrix) {
         printf("Матрица не создана.\n");
         return;
     }

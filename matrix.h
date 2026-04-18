@@ -15,9 +15,9 @@ Matrix* MatrixCreate(size_t size, const FieldInfo* type);
 void MatrixDestroy(Matrix* matrix);
 
 /* операции */
-Matrix* MatrixAdd(const Matrix* a, const Matrix* b);
-Matrix* MatrixMultiply(const Matrix* a, const Matrix* b);
-Matrix* MatrixScalarMultiply(const Matrix* matrix, const void* scalar);
+void MatrixAdd(const Matrix* a, const Matrix* b, Matrix* result);
+void MatrixMultiply(const Matrix* a, const Matrix* b, Matrix* result);
+void MatrixScalarMultiply(const Matrix* matrix, const void* scalar, Matrix* result);
 
 /* Вывод*/
 void MatrixPrint(const Matrix* matrix);

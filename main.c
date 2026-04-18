@@ -175,11 +175,13 @@ static void addMatrices(const Matrix* a, const Matrix* b) {
         return;
     }
 
-    result = MatrixAdd(a, b);
+    result = MatrixCreate(a->size, a->type);
     if (result == NULL) {
-        printf("\nОшибка: матрицы нельзя сложить. Проверьте размер, тип и поддержку операции.\n");
+        printf("\nОшибка создания матрицы результата.\n");
         return;
     }
+
+    MatrixAdd(a, b, result);
 
     printf("\nРезультат сложения:\n");
     MatrixPrint(result);
@@ -195,11 +197,13 @@ static void multiplyMatrices(const Matrix* a, const Matrix* b) {
         return;
     }
 
-    result = MatrixMultiply(a, b);
+    result = MatrixCreate(a->size, a->type);
     if (result == NULL) {
-        printf("\nОшибка: матрицы нельзя умножить. Проверьте размер, тип и поддержку операции.\n");
+        printf("\nОшибка создания матрицы результата.\n");
         return;
     }
+
+    MatrixMultiply(a, b, result);
 
     printf("\nРезультат умножения матриц:\n");
     MatrixPrint(result);
@@ -234,13 +238,15 @@ static void scalarMultiplyMatrix(const Matrix* matrix, const char* name) {
     }
 
     matrix->type->fromDouble(rawScalar, scalar);
-    result = MatrixScalarMultiply(matrix, scalar);
 
+    result = MatrixCreate(matrix->size, matrix->type);
     if (result == NULL) {
-        printf("\nОшибка: операция не поддерживается для данного типа.\n");
+        printf("Ошибка создания матрицы результата\n");
         free(scalar);
         return;
     }
+
+    MatrixScalarMultiply(matrix, scalar, result);
 
     printf("\nРезультат умножения матрицы %s на скаляр:\n", name);
     MatrixPrint(result);
